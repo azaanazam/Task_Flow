@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0b16">
+  <meta name="description" content="TaskFlow - Organize your day, manage tasks and track your productivity.">
+  <title>TaskFlow | Productivity Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-icon">✓</span>
+        <span>Task<span class="accent">Flow</span></span>
+      </a>
+
+      <div class="profile-card">
+        <div class="avatar">A</div>
+        <div>
+          <strong>My Workspace</strong>
+          <small>Personal dashboard</small>
+        </div>
+      </div>
+
+      <p class="nav-heading">WORKSPACE</p>
+      <nav class="navigation">
+        <button class="nav-item active" data-filter="all">
+          <span>▦</span> All Tasks <span class="nav-count" id="allCount">0</span>
+        </button>
+        <button class="nav-item" data-filter="active">
+          <span>◷</span> In Progress
+        </button>
+        <button class="nav-item" data-filter="completed">
+          <span>✓</span> Completed
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="mini-tip">
+          <span class="tip-icon">✦</span>
+          <strong>Stay focused!</strong>
+          <p>Small steps every day lead to big results.</p>
+        </div>
+        <button class="theme-button" id="themeToggle">
+          <span id="themeIcon">☀</span>
+          <span id="themeText">Switch to light</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="todayDate">YOUR PRODUCTIVITY SPACE</p>
+          <h1>My Dashboard <span class="wave">✦</span></h1>
+          <p class="subtitle">A little progress each day adds up to big results.</p>
+        </div>
+        <button class="primary-button top-add" id="topAdd">＋ New Task</button>
+      </header>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <div class="stat-top">
+            <span>Total Tasks</span>
+            <span class="stat-icon purple">▤</span>
+          </div>
+          <h2 id="totalStat">0</h2>
+          <p>Tasks in your workspace</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-top">
+            <span>In Progress</span>
+            <span class="stat-icon blue">◷</span>
+          </div>
+          <h2 id="activeStat">0</h2>
+          <p>Still to be completed</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-top">
+            <span>Completed</span>
+            <span class="stat-icon green">✓</span>
+          </div>
+          <h2 id="completedStat">0</h2>
+          <p>Tasks you've finished</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-top">
+            <span>Completion</span>
+            <span class="stat-icon orange">↗</span>
+          </div>
+          <h2 id="rateStat">0%</h2>
+          <p>Your overall progress</p>
+        </article>
+      </section>
+
+      <section class="progress-card">
+        <div class="progress-info">
+          <div>
+            <h3>Daily Progress</h3>
+            <p id="progressMessage">Let's make today productive!</p>
+          </div>
+          <strong id="progressLabel">0%</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </section>
+
+      <section class="tasks-section">
+        <div class="section-header">
+          <div>
+            <h2>Your Tasks</h2>
+            <p>Plan it. Do it. Complete it.</p>
+          </div>
+          <div class="task-tools">
+            <label class="search-box">
+              <span>⌕</span>
+              <input type="search" id="searchInput" placeholder="Search tasks...">
+            </label>
+            <select id="priorityFilter" aria-label="Filter by priority">
+              <option value="all">All priorities</option>
+              <option value="High">High priority</option>
+              <option value="Medium">Medium priority</option>
+              <option value="Low">Low priority</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all">All Tasks</button>
+          <button class="filter-tab" data-filter="active">In Progress</button>
+          <button class="filter-tab" data-filter="completed">Completed</button>
+          <span class="results-count" id="resultsCount">0 tasks</span>
+        </div>
+
+        <div class="task-list" id="taskList"></div>
+        <div class="empty-state" id="emptyState" hidden>
+          <div class="empty-icon">✦</div>
+          <h3>No tasks found</h3>
+          <p>Add a new task or change your filters.</p>
+          <button class="primary-button" id="emptyAdd">＋ Create a task</button>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>Made with <span class="heart">♥</span> and focus.</span>
+        <span>TaskFlow © <span id="year"></span></span>
+      </footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="taskModal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">YOUR WORKSPACE</p>
+          <h2 id="modalTitle">Create a Task</h2>
+        </div>
+        <button class="close-button" id="closeModal" aria-label="Close dialog">×</button>
+      </div>
+
+      <form id="taskForm">
+        <label for="taskTitle">Task title</label>
+        <input id="taskTitle" name="title" type="text" maxlength="100"
+          placeholder="e.g. Build my portfolio" required>
+
+        <label for="taskDescription">Description <span class="optional">(optional)</span></label>
+        <textarea id="taskDescription" name="description" rows="3"
+          maxlength="300" placeholder="What do you need to accomplish?"></textarea>
+
+        <div class="form-row">
+          <div>
+            <label for="taskPriority">Priority</label>
+            <select id="taskPriority" name="priority">
+              <option value="Low">Low</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+          <div>
+            <label for="taskDue">Due date</label>
+            <input id="taskDue" name="dueDate" type="date">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary-button" id="cancelModal">Cancel</button>
+          <button type="submit" class="primary-button" id="saveTask">Create Task</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
